@@ -20,6 +20,31 @@
 
 ---
 
+## Fork note: Hexagon NPU enabled (Snapdragon 8 Gen 3)
+
+This fork flips three feature flags to expose the experimental HTP (Hexagon NPU) backend in the Inference Backend picker:
+
+- `src/services/llmHelpers.ts:11` — `HTP_ENABLED = true`
+- `src/hooks/useTextGenerationAdvanced.ts:8` — `HTP_ENABLED = true`
+- `src/screens/ModelSettingsScreen/TextGenerationAdvanced.tsx:18` — `HTP_UI_ENABLED = true`
+
+`android/app/build.gradle` also adds `applicationIdSuffix ".dev"` to the release variant so the patched build can coexist with the Play Store release.
+
+End-to-end stack proven working: `llama.rn 0.12.0-rc.9` ships `libggml-htp-v75.so` for Hexagon v75 (8 Gen 3); fastrpc traces confirm the model executes on the cdsp domain with `htp_iface_skel_handle_invoke` invocations from the app's PID. The `getBackendDevicesInfo` runtime probe surfaces `HTP*` devices and the Settings picker exposes `HTP` once `hasNPU` resolves true.
+
+### Benchmarks — Samsung Galaxy S24 Ultra (SM8650, 8 Gen 3)
+
+Read directly from Off Grid's in-app benchmark screen. Same prompt, same context length per backend.
+
+| Model | Quant | CPU | OpenCL (24L cap) | HTP (99L) |
+|---|---|---|---|---|
+| Qwen 3.5 0.8B | Q4_0 | **30.9 tok/s** | 12.1 | 7.0 |
+| Gemma 4 E4B | Q4_0 | 5.6 | **8.3 tok/s** | 7.7 |
+
+OpenCL beats HTP on both sizes; CPU beats HTP on the small one. With this APK, on this device, the Hexagon path is not faster than OpenCL today. The integration works — the speedup is the part that does not.
+
+---
+
 ## Not just another chat app
 
 Most "local LLM" apps give you a text chatbot and call it a day. Off Grid is a **complete offline AI suite** — text generation, image generation, vision AI, voice transcription, tool calling, and document analysis, all running natively on your phone's or Mac's hardware.

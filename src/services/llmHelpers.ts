@@ -8,7 +8,7 @@ import logger from '../utils/logger';
 import { useDebugLogsStore } from '../stores/debugLogsStore';
 
 /** Feature flag: Set to true to enable HTP/Hexagon NPU support. Currently disabled. */
-const HTP_ENABLED = false;
+const HTP_ENABLED = true;
 
 export const SYSTEM_PROMPT_RESERVE = 256;
 export const RESPONSE_RESERVE = 512;

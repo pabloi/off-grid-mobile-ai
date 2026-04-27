@@ -15,7 +15,7 @@ import { hardwareService } from '../../services/hardware';
 import { createStyles } from './styles';
 
 /** Feature flag: Set to true to enable HTP/Hexagon NPU in UI. Currently disabled. */
-const HTP_UI_ENABLED = false;
+const HTP_UI_ENABLED = true;
 
 // ─── Inference Backend ────────────────────────────────────────────────────────
 
